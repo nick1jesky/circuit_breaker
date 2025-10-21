@@ -96,7 +96,7 @@ func TestConcurrentAccess(t *testing.T) {
 	)
 
 	var wg sync.WaitGroup
-	iterations := 1000
+	iterations := 10000
 	goroutines := 10
 
 	for range goroutines {
@@ -110,6 +110,22 @@ func TestConcurrentAccess(t *testing.T) {
 					} else {
 						cb.RecordSuccess()
 					}
+				}
+
+				if j%1500 == 0 {
+					cb.UpdateValues(
+						NewInt64Threshold(20),
+						NewInt64Threshold(200),
+						500*time.Millisecond,
+					)
+				}
+
+				if j%1300 == 0 {
+					cb.UpdateValues(
+						NewInt64Threshold(100),
+						NewInt64Threshold(100),
+						100*time.Millisecond,
+					)
 				}
 
 				if j%50 == 0 {
